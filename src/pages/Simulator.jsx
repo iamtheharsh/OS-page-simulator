@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { simulateFIFO, simulateOptimal, simulateLRU, simulateLFU, simulateMFU, parsePages } from '../utils/simulator';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const algorithms = {
   FIFO: { name: 'First-In-First-Out (FIFO)', func: simulateFIFO },
@@ -167,9 +171,68 @@ const Simulator = () => {
               </table>
             </div>
             
-            {/* Summary Placeholder (For Phase 5) */}
-            <div id="summary-section" className="mt-12">
-               {/* Summary will go here in Phase 5 */}
+            {/* Summary Section */}
+            <div id="summary-section" className="mt-12 bg-cardbg rounded-2xl p-8 border border-gray-800 shadow-xl">
+              <h2 className="text-3xl font-bold text-center mb-8">Summary</h2>
+              
+              <div className="flex flex-col md:flex-row justify-around items-center gap-8">
+                
+                {/* Stats Cards */}
+                <div className="flex flex-col gap-6 w-full md:w-1/2">
+                  <div className="bg-[#2A2A40] rounded-xl p-6 shadow-lg border-b-4 border-primary hover:-translate-y-1 transition-transform">
+                    <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Total Faults</h3>
+                    <p className="text-5xl font-bold text-primary">
+                      {results.filter(r => r.fault).length}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-[#2A2A40] rounded-xl p-6 shadow-lg border-b-4 border-green-500 hover:-translate-y-1 transition-transform">
+                    <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Total Hits</h3>
+                    <p className="text-5xl font-bold text-green-500">
+                      {results.filter(r => !r.fault).length}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pie Chart */}
+                <div className="w-full md:w-1/2 flex flex-col items-center">
+                  <h3 className="text-gray-300 font-bold mb-4">Hit vs Fault Ratio</h3>
+                  <div className="w-64 h-64">
+                    <Pie 
+                      data={{
+                        labels: ['Faults', 'Hits'],
+                        datasets: [
+                          {
+                            data: [
+                              results.filter(r => r.fault).length,
+                              results.filter(r => !r.fault).length
+                            ],
+                            backgroundColor: ['#E91E63', '#4CAF50'],
+                            borderColor: ['#1E1E2F', '#1E1E2F'],
+                            borderWidth: 4,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: {
+                              color: '#e2e8f0',
+                              font: {
+                                family: "'Inter', sans-serif",
+                                weight: 'bold'
+                              }
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+              </div>
             </div>
             
           </div>
