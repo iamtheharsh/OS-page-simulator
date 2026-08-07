@@ -60,6 +60,11 @@ const Home = () => {
             </div>
           ))}
         </div>
+        <div className="flex justify-center mt-12">
+          <Link to="/algorithms" className="inline-block bg-primary hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-md transition-colors duration-200">
+            Learn More &rarr;
+          </Link>
+        </div>
       </section>
 
     </div>
