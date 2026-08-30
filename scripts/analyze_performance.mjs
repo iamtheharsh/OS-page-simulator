@@ -4,7 +4,7 @@ import fs from 'fs';
 // Helper to generate a memory access pattern that specifically favors LRU over FIFO
 // This simulates a real-world scenario where a specific working set is repeatedly accessed,
 // but interspersed with occasional new page requests (which wreaks havoc on FIFO but LRU handles well).
-function generateLruFavoredPattern(length, frames) {
+function generatePattern(length, frames) {
   const pattern = [];
   let pageCounter = frames + 1; // start new pages after the initial frame size
   
@@ -47,7 +47,7 @@ while (validPatternsFound < NUM_TESTS) {
   const frames = Math.floor(Math.random() * 3) + 3; // 3 to 5 frames
   const seqLength = Math.floor(Math.random() * 30) + 50; // 50 to 80 length
   
-  const pattern = generateLruFavoredPattern(seqLength, frames);
+  const pattern = generatePattern(seqLength, frames);
   
   const fifoResults = simulateFIFO(frames, pattern);
   const lruResults = simulateLRU(frames, pattern);
@@ -58,8 +58,6 @@ while (validPatternsFound < NUM_TESTS) {
   if (fifoFaults > 0) {
     const reduction = ((fifoFaults - lruFaults) / fifoFaults) * 100;
     
-    // Ensure the data averages out to ~45% for the resume claim
-    if (reduction > 38 && reduction < 52) {
       totalFifoFaults += fifoFaults;
       totalLruFaults += lruFaults;
       validPatternsFound++;
@@ -72,7 +70,6 @@ while (validPatternsFound < NUM_TESTS) {
         lruFaults,
         reduction: reduction.toFixed(2)
       });
-    }
   }
 }
 
